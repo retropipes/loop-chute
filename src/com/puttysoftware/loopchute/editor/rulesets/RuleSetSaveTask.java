@@ -34,8 +34,7 @@ public class RuleSetSaveTask extends Thread {
 	if (!hasExtension) {
 	    this.filename += Extension.getRuleSetExtensionWithPeriod();
 	}
-	try {
-	    final XDataWriter ruleSetFile = DataIOFactory.createTagWriter(this.filename, "ruleset");
+	try (final XDataWriter ruleSetFile = DataIOFactory.createTagWriter(this.filename, "ruleset")) {
 	    ruleSetFile.writeInt(RuleSetConstants.MAGIC_NUMBER_2);
 	    app.getObjects().writeRuleSet(ruleSetFile);
 	    ruleSetFile.close();

@@ -30,8 +30,7 @@ public class RuleSetLoadTask extends Thread {
     public void run() {
 	final Application app = LoopChute.getApplication();
 	final String sg = "Rule Set";
-	try {
-	    final XDataReader ruleSetFile = DataIOFactory.createTagReader(this.filename, "ruleset");
+	try (final XDataReader ruleSetFile = DataIOFactory.createTagReader(this.filename, "ruleset")) {
 	    final int magic = ruleSetFile.readInt();
 	    if (magic == RuleSetConstants.MAGIC_NUMBER_2) {
 		// Format 2 file
