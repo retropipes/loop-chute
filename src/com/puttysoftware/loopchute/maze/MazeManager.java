@@ -5,6 +5,8 @@ Any questions should be directed to the author via email at: products@puttysoftw
  */
 package com.puttysoftware.loopchute.maze;
 
+import java.awt.desktop.OpenFilesEvent;
+import java.awt.desktop.OpenFilesHandler;
 import java.io.File;
 import java.io.IOException;
 
@@ -26,7 +28,7 @@ import com.puttysoftware.loopchute.maze.games.GameLoadTask;
 import com.puttysoftware.loopchute.maze.games.GameSaveTask;
 import com.puttysoftware.loopchute.prefs.PreferencesManager;
 
-public class MazeManager {
+public class MazeManager implements OpenFilesHandler {
     // Fields
     private Maze gameMaze;
     private boolean loaded, isDirty;
@@ -146,11 +148,10 @@ public class MazeManager {
 	this.scoresFileName = filename;
     }
 
-    public void loadFromOSHandler(final String filename) { // NO_UCD
+    public void loadFromOSHandler(final File file) { // NO_UCD
 	final Application app = LoopChute.getApplication();
 	if (!this.loaded) {
 	    String extension;
-	    final File file = new File(filename);
 	    String loadFile;
 	    loadFile = file.getAbsolutePath();
 	    extension = MazeManager.getExtension(file);
@@ -681,5 +682,12 @@ public class MazeManager {
 	    fno = s;
 	}
 	return fno;
+    }
+
+    @Override
+    public void openFiles(OpenFilesEvent e) {
+	for (final File file : e.getFiles()) {
+	    this.loadFromOSHandler(file);
+	}
     }
 }

@@ -7,9 +7,9 @@ package com.puttysoftware.loopchute;
 
 import org.retropipes.diane.Diane;
 import org.retropipes.diane.gui.dialog.CommonDialogs;
+import org.retropipes.diane.integration.Integration;
 
-import com.puttysoftware.loopchute.prefs.PreferencesManager;
-import com.puttysoftware.platform.Platform;
+import com.puttysoftware.loopchute.prefs.PreferencesLauncher;
 
 public class LoopChute {
     // Constants
@@ -32,26 +32,18 @@ public class LoopChute {
 
     public static void main(final String[] args) {
 	try {
+	    Diane.installDefaultErrorHandler(LoopChute.PROGRAM_NAME);
 	    // Integrate with host platform
-	    Platform.hookLAF(LoopChute.PROGRAM_NAME);
+	    Integration i = Integration.integrate();
 	    LoopChute.application = new Application();
 	    LoopChute.application.postConstruct();
 	    LoopChute.application.playLogoSound();
 	    LoopChute.application.getGUIManager().showGUI();
 	    // Register platform hooks
-	    Platform.hookAbout(LoopChute.application.getAboutDialog(),
-		    LoopChute.application.getAboutDialog().getClass().getDeclaredMethod("showAboutDialog"));
-	    String s;
-	    if (args.length == 0) {
-		s = null;
-	    } else {
-		s = args[0];
-	    }
-	    Platform.hookFileOpen(LoopChute.application.getMazeManager(), LoopChute.application.getMazeManager()
-		    .getClass().getDeclaredMethod("loadFromOSHandler", String.class), s);
-	    Platform.hookPreferences(PreferencesManager.class, PreferencesManager.class.getDeclaredMethod("showPrefs"));
-	    Platform.hookQuit(LoopChute.application.getGUIManager(),
-		    LoopChute.application.getGUIManager().getClass().getDeclaredMethod("quitHandler"));
+	    i.setAboutHandler(LoopChute.application.getAboutDialog());
+	    i.setOpenFileHandler(LoopChute.application.getMazeManager());
+	    i.setPreferencesHandler(new PreferencesLauncher());
+	    i.setQuitHandler(LoopChute.application.getGUIManager());
 	    // Set up Common Dialogs
 	    CommonDialogs.setDefaultTitle(LoopChute.PROGRAM_NAME);
 	    CommonDialogs.setIcon(LoopChute.application.getMicroLogo());

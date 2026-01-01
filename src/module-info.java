@@ -1,5 +1,7 @@
 module com.puttysoftware.ltremix {
     requires org.retropipes.diane.asset.image;
+    requires org.retropipes.diane.asset.ogg;
+    requires org.retropipes.diane.asset.sound;
     requires org.retropipes.diane.edge;
     requires org.retropipes.diane.fileio;
     requires org.retropipes.diane.fileio.utility;
@@ -7,6 +9,8 @@ module com.puttysoftware.ltremix {
     requires org.retropipes.diane.gui.picker;
     requires org.retropipes.diane.help;
     requires org.retropipes.diane.internal;
+    requires org.retropipes.diane.integration;
     requires org.retropipes.diane.random;
+    requires org.retropipes.diane.storage;
     requires java.desktop;
 }

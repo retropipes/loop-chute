@@ -11,8 +11,8 @@ import java.util.Arrays;
 import org.retropipes.diane.fileio.XDataReader;
 import org.retropipes.diane.fileio.XDataWriter;
 import org.retropipes.diane.random.RandomRange;
+import org.retropipes.diane.storage.FlagStorage;
 
-import com.puttysoftware.llds.LowLevelFlagDataStore;
 import com.puttysoftware.loopchute.LoopChute;
 import com.puttysoftware.loopchute.generic.MazeObject;
 import com.puttysoftware.loopchute.generic.MazeObjectList;
@@ -25,7 +25,7 @@ class LayeredTower implements Cloneable {
     // Properties
     private LowLevelDataStore data;
     private SavedTowerState savedTowerState;
-    private LowLevelFlagDataStore visionData;
+    private FlagStorage visionData;
     private final int[] playerStartData;
     private final int[] playerLocationData;
     private final int[] savedPlayerLocationData;
@@ -57,7 +57,7 @@ class LayeredTower implements Cloneable {
     public LayeredTower(final int rows, final int cols, final int floors) {
 	this.data = new LowLevelDataStore(cols, rows, floors, MazeConstants.LAYER_COUNT);
 	this.savedTowerState = new SavedTowerState(rows, cols, floors);
-	this.visionData = new LowLevelFlagDataStore(cols, rows, floors);
+	this.visionData = new FlagStorage(cols, rows, floors);
 	this.playerStartData = new int[3];
 	Arrays.fill(this.playerStartData, -1);
 	this.playerLocationData = new int[3];
@@ -111,7 +111,7 @@ class LayeredTower implements Cloneable {
     public LayeredTower clone() {
 	final LayeredTower copy = new LayeredTower(this.getRows(), this.getColumns(), this.getFloors());
 	copy.data = (LowLevelDataStore) this.data.clone();
-	copy.visionData = (LowLevelFlagDataStore) this.visionData.clone();
+	copy.visionData = new FlagStorage(this.visionData);
 	copy.savedTowerState = this.savedTowerState.clone();
 	System.arraycopy(this.playerStartData, 0, copy.playerStartData, 0, this.playerStartData.length);
 	System.arraycopy(this.findResult, 0, copy.findResult, 0, this.findResult.length);

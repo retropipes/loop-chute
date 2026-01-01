@@ -8,21 +8,22 @@ package com.puttysoftware.loopchute.resourcemanagers;
 import java.net.URL;
 import java.nio.BufferUnderflowException;
 
+import org.retropipes.diane.asset.ogg.DianeOggPlayer;
+
 import com.puttysoftware.loopchute.LoopChute;
-import com.puttysoftware.media.Music;
 
 public class MusicManager {
     private static final String DEFAULT_LOAD_PATH = "/com/puttysoftware/loopchute/resources/music/";
     private static String LOAD_PATH = MusicManager.DEFAULT_LOAD_PATH;
     private static Class<?> LOAD_CLASS = MusicManager.class;
-    private static Music CURRENT_MUSIC;
-    private static MusicTask task;
+    private static DianeOggPlayer CURRENT_MUSIC;
 
-    private static Music getMusic(final String filename) {
+    private static DianeOggPlayer getMusic(final String filename) {
 	try {
 	    final URL url = MusicManager.LOAD_CLASS
 		    .getResource(MusicManager.LOAD_PATH + filename.toLowerCase() + ".ogg");
-	    return new Music(url);
+	    final DianeOggPlayer mus = DianeOggPlayer.loadResource(url);
+	    return mus;
 	} catch (final NullPointerException np) {
 	    return null;
 	}
@@ -32,8 +33,7 @@ public class MusicManager {
 	MusicManager.CURRENT_MUSIC = MusicManager.getMusic(musicName);
 	if (MusicManager.CURRENT_MUSIC != null) {
 	    // Play the music
-	    MusicManager.task = new MusicTask(MusicManager.CURRENT_MUSIC);
-	    MusicManager.task.start();
+	    MusicManager.CURRENT_MUSIC.start();
 	}
     }
 
@@ -41,7 +41,7 @@ public class MusicManager {
 	if (MusicManager.CURRENT_MUSIC != null) {
 	    // Stop the music
 	    try {
-		MusicManager.CURRENT_MUSIC.stopLoop();
+		DianeOggPlayer.stopPlaying();
 	    } catch (final BufferUnderflowException bue) {
 		// Ignore
 	    } catch (final NullPointerException np) {
@@ -53,8 +53,8 @@ public class MusicManager {
     }
 
     public static boolean isMusicPlaying() {
-	if (MusicManager.task != null) {
-	    if (MusicManager.task.isAlive()) {
+	if (MusicManager.CURRENT_MUSIC != null) {
+	    if (MusicManager.CURRENT_MUSIC.isAlive()) {
 		return true;
 	    }
 	}
